@@ -1,5 +1,5 @@
 # hpc_lecture
-
+20M30752 QIAN YI
 |          | Topic                                | Sample code               |
 | -------- | ------------------------------------ | ------------------------- |
 | Class 1  | Introduction to parallel programming |                           |
