@@ -1,12 +1,14 @@
 #include <cstdio>
 #include <cstdlib>
 #include <vector>
+#include <omp.h>
 
 template<class T>
 void merge(std::vector<T>& vec, int begin, int mid, int end) {
   std::vector<T> tmp(end-begin+1);
   int left = begin;
   int right = mid+1;
+#pragma omp parallel for
   for (int i=0; i<tmp.size(); i++) { 
     if (left > mid)
       tmp[i] = vec[right++];
@@ -23,12 +25,24 @@ void merge(std::vector<T>& vec, int begin, int mid, int end) {
 
 template<class T>
 void merge_sort(std::vector<T>& vec, int begin, int end) {
-  if(begin < end) {
-    int mid = (begin + end) / 2;
-    merge_sort(vec, begin, mid);
-    merge_sort(vec, mid+1, end);
-    merge(vec, begin, mid, end);
-  }
+	int i, j, t;
+	int length = end - begin+1;
+#pragma omp parallel for private(i, t) shared(length, vec)
+	//merge single ones
+	for (i = 0; i < length / 2; i++)
+		if (vec[i * 2] > vec[i * 2 + 1]) {
+			t = vec[i * 2];
+			vec[i * 2] = vec[i * 2 + 1];
+			vec[i * 2 + 1] = t;
+		}
+
+	//i represents  length of merge
+	for (i = 2; i < end; i *= 2) {
+#pragma omp parallel for private(j) shared(end, i)
+		for (j = 0; j <= end - i; j += i * 2) {
+			merge(vec,j, j + i-1, (j + i * 2 -1< end ? j + i * 2-1 : end));
+		}
+	}
 }
 
 int main() {
