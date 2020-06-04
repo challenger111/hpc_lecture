@@ -18,8 +18,6 @@ int main(int argc, const char **argv) {
   int n = 4096;
   float alpha = 1.0;
   float beta = 0.0;
-  static const matrix_transform_t::kind_t TransformA = matrix_transform_t::NonTranspose;
-  static const matrix_transform_t::kind_t TransformB = matrix_transform_t::NonTranspose;
   typedef float value_t;
   typedef float accum_t;
   int g_timing_iterations = 10;
@@ -32,10 +30,6 @@ int main(int argc, const char **argv) {
   B.random();
   C.fill_ramp(0,0);
   C2.fill_ramp(0,0);
-  A.sync_device();
-  B.sync_device();
-  C.sync_device();
-  C2.sync_device();
   cublasHandle_t g_cublas_handle;
   cublasCreate(&g_cublas_handle);
   gpu_timer timer;
